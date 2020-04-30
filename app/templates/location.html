@@ -1,0 +1,110 @@
+{% extends "login.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .container {
+        max-width: 1000px;
+    }
+
+    .ex2 {
+        display: inline;
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 53%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        -ms-transform: translateX(-90%);
+        transform: translateX(-90%);
+    }
+
+
+
+
+    /* Create two equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 33.3%;
+        padding: 20px;
+        
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        display: table;
+        clear: both;
+    }
+    ul {
+  padding-left: 10%;
+}
+</style>
+
+{% endblock %}
+{% block content %}
+<form>
+    <input type="button" class="btn darken-2 z-depth-0" value="<<<<Back" onclick="history.back()">
+</form>
+<div style="text-align: left; width: 90%; position: relative; left: 5%; top: 30px">
+    <p style="width: 70%; display: inline">
+
+        Please enter your location, the item in which you are interested, and the search radius. The more information that you provide, the better your search will be.
+        Currently, the items that we support are toilet paper and hand santizer. Also, in this Beta version,
+        we only support stores in our home state Massachusetts and the surrounding regions. If your location is not within the 
+        supported area but you would like to test this application, you can try the following addresses:
+        <ul style="padding-left: 2%">
+            <li style="list-style-type: circle !important">700 Boylston St, Boston, MA</li>
+             <li style="list-style-type: circle !important"> 30 Patten Rd, Westford, MA</li>
+             <li style="list-style-type: circle !important"> 5 Race Lane, Marstons Mills, MA</li>
+            
+        </ul>
+        Please <a href="mailto:wacodevidhackathon@gmail.com">email us</a>
+        if you have other ideas for items or if you would like to see this
+        service extend to your region.
+        <br />
+        
+    </p>
+</div>
+    <div class="row group">
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div class="column new_div">
+           
+                <h5 style="display: inline-block">Your Address:</h5>
+                {{form.address(class = "ex2")}}
+            </div>
+            <div class="column new_div">
+     
+                <h5 style="display: inline-block">
+                    Item:
+                </h5>
+                {{form.item_option(class = "badge ex2")}}
+                <div style="position:relative; left: 40%;">
+                    <br />
+                    <br />
+                    {{ form.submit(class="btn darken-2 z-depth-0") }}
+                </div>
+
+
+
+            </div>
+
+            <div class="column new_div">
+
+
+                <h5 style="display: inline-block">
+                    Search Radius:
+                </h5>
+                {{form.distance_option(class = "badge ex2")}}
+
+            </div>
+        </form>
+</div>
+    
+
+    {% endblock %}
+
+

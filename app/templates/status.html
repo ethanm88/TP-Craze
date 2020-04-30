@@ -1,0 +1,209 @@
+{% extends "login.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .container {
+        max-width: 1000px;
+    }
+
+    .ex2 {
+        display: inline;
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 53%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        -ms-transform: translateX(-90%);
+        transform: translateX(-90%);
+    }
+
+
+
+
+    /* Create two equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 50%;
+        padding: 20px;
+        
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        display: table;
+        clear: both;
+    }
+
+
+    #rcorners1 {
+        border-radius: 100px;
+        background: #12e012;
+        padding: 10px;
+        width: 95%;
+        height: 70px;
+    }
+
+    #rcorners2 {
+        border-radius: 100px;
+        background: #64d164;
+        padding: 10px;
+        width: 95%;
+        height: 70px;
+    }
+
+    #rcorners3 {
+        border-radius: 100px;
+        background: #ebeb21;
+        padding: 10px;
+        width: 95%;
+        height: 70px;
+    }
+
+    #rcorners4 {
+        border-radius: 100px;
+        background: #d95050;
+        padding: 10px;
+        width: 95%;
+        height: 70px;
+    }
+
+    #rcorners5 {
+        border-radius: 100px;
+        background: #d92525;
+        padding: 10px;
+        width: 95%;
+        height: 70px;
+    }
+
+    #rcorners6 {
+        border-radius: 100px;
+        background: linear-gradient();
+        padding: 10px;
+        width: 95%;
+        height: 70px;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+<form>
+    <input type="button" class="btn darken-2 z-depth-0" value="<<<<Back" onclick="history.back()">
+</form>
+<div class="row group">
+    <div class="column new_div">
+        <h4> {{store}} </h4>
+        {% if type_query == 'status'%}
+        <h6>Update Status for {{selected_item}}:</h6>
+        <div id="userLoggedIn">
+            <form method="POST">
+                {{ form.csrf_token }}
+
+                {{form.status_option(class = "badge ex2")}}
+                <br />
+
+
+                <p class="modal-trigger">{{ form.submit(class="btn darken-2 z-depth-0") }}</p>
+            </form>
+        </div>
+        <div id="userLoggedOut">
+            <p class="modal-trigger">You must log in to provide a status update.</p>
+        </div>
+        {% endif %}
+        {% if type_query == 'status'%}
+        <p>
+            If you are a store manager, please <a href="mailto:wacodevidhackathon@gmail.com">email us</a>
+            with valid idenification, and we will activate your store manager account.
+        </p>
+        {% endif %}
+        <h4> Store Information: </h4>
+        <h6> {{basic_info[0]}} </h6>
+        <h6> {{basic_info[1]}} </h6>
+    </div>
+    <div class="column new_div">
+        <h4> Status for {{selected_item}}:</h4>
+        <p>The <b>Store Manager</b> tag indicates that the status update comes from a verified store manager.</p>
+        <div>
+            {%for i in range(0, len)%}
+            {% if i == 0 %}
+            {% if managers[i] == 0 %}
+            {% if type_item[i] == 1 %}
+            <p id="rcorners{{colors[i]}}">
+                <img src="static\tp.png" width="20" height="20">
+                {{messages[i]}}
+            </p>
+            {% else %}
+            <p id="rcorners{{colors[i]}}">
+                <img src="static\hand_sanitizer.png" width="20" height="20">
+                {{messages[i]}}
+            </p>
+            {% endif %}
+            {% else %}
+
+            {% if type_item[i] == 1 %}
+            <p id="rcorners{{colors[i]}}">
+                <img src="static\tp.png" width="20" height="20">
+                {{messages[i]}} <b>(Store Manager)</b>
+            </p>
+            {% else %}
+            <p id="rcorners{{colors[i]}}">
+                <img src="static\hand_sanitizer.png" width="20" height="20">
+                {{messages[i]}} <b>(Store Manager)</b>
+            </p>
+            {% endif %}
+
+            {% endif %}
+
+
+            {% else %}
+
+            {% if managers[i] == 0 %}
+            {% if type_item[i] == 1 %}
+            <p id="rcorners{{colors[i]}}" class="clear">
+                <img src="static\tp.png" width="20" height="20">
+                {{messages[i]}}
+            </p>
+            {% else %}
+            <p id="rcorners{{colors[i]}}" class="clear">
+                <img src="static\hand_sanitizer.png" width="20" height="20">
+                {{messages[i]}}
+            </p>
+            {% endif %}
+            {% else %}
+
+            {% if type_item[i] == 1 %}
+            <p id="rcorners{{colors[i]}}" class="clear">
+                <img src="static\tp.png" width="20" height="20">
+                {{messages[i]}} <b>(Store Manager)</b>
+            </p>
+            {% else %}
+            <p id="rcorners{{colors[i]}}" class="clear">
+                <img src="static\hand_sanitizer.png" width="20" height="20">
+                {{messages[i]}} <b>(Store Manager)</b>
+            </p>
+            {% endif %}
+
+            {% endif %}
+
+
+            {% endif %}
+            {%endfor%}
+
+
+        </div>
+    </div>
+</div>
+<script>
+
+    
+</script>
+
+    {% endblock %}
+
+
+
+

@@ -1,0 +1,174 @@
+{% extends "login.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .list-inline {
+        padding-left: 0;
+        margin-left: -5px;
+        list-style: none;
+    }
+
+        .list-inline > li {
+            display: inline-block;
+            padding-right: 5px;
+            padding-left: 5px;
+        }
+        table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 0px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+.column1 {
+        float: left;
+        width: 73%;
+        padding: 20px;
+        
+    }
+    .column2 {
+        float: left;
+        width: 27%;
+        padding: 20px;
+       
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        display: table;
+        clear: both;
+    }
+
+</style>
+
+{% endblock %}
+{% block content %}
+<form>
+    <input type="button" class="btn darken-2 z-depth-0" value="<<<<Back" onclick="history.back()">
+</form>
+
+<div class="row group">
+    <div class="column1 new_div">
+        <div style="text-align:left; width:90%; position: relative;
+  left: 5%;">
+            <h4 style="width: 100%;">Stores Near You: </h4>
+            <h6 style="width: 100%;">Item Selected: {{selected_item_name}}</h6>
+            {% if storeFound == True %}
+
+            {% if type_query == 'find' %}
+            <p>Select one of the stores below to view all previous status updates.</p>
+            {% else %}
+            <p>Select one of the stores below to post a new status update.</p>
+            {% endif %}
+            <form method="POST" style="width: 100%;">
+
+                <table>
+
+                    {% for key,value in radio.items() %}
+                    <tr>
+                        {% if status_values[key] != 0 %}
+
+                        <th>
+                            <label class=".row">
+                                <input class=".row" name="options" type="radio" value="{{ key }}" />
+                                <span>{{ value }}</span>
+                            </label>
+                        </th>
+
+
+                        {% else %}
+                        <th>
+                            <label>
+                                <input name="options" type="radio" value="{{ key }}" checked />
+                                <span>{{ value }}</span>
+                            </label>
+                            <br />
+                        </th>
+
+
+                        {% endif %}
+                        <th>
+                            {%for i in range(0, status_values[key])%}
+                            {% if selected_item_index == 1 %}
+                            <img src="static\tp.png" width="20" height="20">
+                            {% elif selected_item_index == 2%}
+                            <img src="static\hand_sanitizer.png" width="20" height="20">
+                            {% endif %}
+                            {% endfor %}
+
+                            {% if status_values[key] != 0 %}
+
+                            <br />
+
+                            {% endif %}
+                        </th>
+                    </tr>
+                    {% endfor %}
+
+                </table>
+                <p>{{ form.submit(class="btn darken-2 z-depth-0") }}</p>
+            </form>
+            {% else %}
+
+            {% if type_query == 'find' %}
+            <p style="width: 100%;">
+                No stores found within {{dist}} km of entered location have {{selected_item_name}}.
+                <br /> Please refine the search radius or try another location.
+            </p>
+            {% else %}
+            <p style="width: 100%;">
+                No stores found within {{dist}} km of entered location.
+                <br /> Please refine the search radius or try another location.
+            </p>
+            {% endif %}
+
+
+            {% endif %}
+        </div>
+        </div>
+    <div class="column2 new_div">
+        <br />
+
+        <br />
+        <h5>Key:</h5>
+       
+        <table>
+            {%for i in range(0,5)%}
+            <tr>
+                <th>
+                    <p>{{status_types[i]}}</p>
+                </th>
+                <th>
+                    {%for i in range(0,5-i)%}
+                    {% if selected_item_index == 1 %}
+                    <img src="static\tp.png" width="20" height="20">
+                    {% elif selected_item_index == 2%}
+                    <img src="static\hand_sanitizer.png" width="20" height="20">
+                    {% endif %}
+                    {% endfor %}
+                </th>
+            </tr>
+
+            {% endfor %}
+            <tr>
+                <th>
+                    <p>No Data Available</p>
+                </th>
+                <th>
+                </th>
+            </tr>
+        </table>
+    </div>
+    </div>
+    
+
+
+    {% endblock %}
+
+
+

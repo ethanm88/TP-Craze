@@ -1,0 +1,359 @@
+﻿<html lang="en">
+<head>
+    {% block head %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="shortcut icon" type="image/png" href="static\tp.png" />
+    <title>TP-CRAZE</title>
+    <style>
+        .header {
+            padding: 0%;
+            text-align: center;
+            color: black;
+            font-size: 50px;
+            position: relative;
+            left: 33%;
+        }
+
+        .in-center1 {
+            position: relative;
+            left: 33%;
+        }
+        .modal {
+            overflow: auto;
+        }
+    </style>
+    {% endblock %}
+</head>
+<body class="grey lighten-3" ">
+
+    <!-- NAVBAR -->
+    <nav class="z-depth-0 grey lighten-4">
+        <div class="nav-wrapper container">
+            <a href="/" class="">
+                <img class="in-center1" src="static\tp.png" width="35" height="35">
+                <h1 class="header" style="display:inline">TP-CRAZE</h1>
+                <img class="in-center1" src="static\tp.png" width="35" height="35">
+            </a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li class="logged-in" style="display: none;">
+                    <a href="#" class="grey-text modal-trigger" data-target="modal-account">Account</a>
+                </li>
+                <li class="logged-in" style="display: none;">
+                    <a href="#" class="grey-text" id="logout" onclick="">Logout</a>
+                </li>
+
+                <li class="logged-out" style="display: none;">
+                    <a href="#" class="grey-text modal-trigger" data-target="modal-login">Login</a>
+                </li>
+                <li class="logged-out" style="display: none;">
+                    <a href="#" class="grey-text modal-trigger" data-target="modal-signup">Sign up</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ADMIN ACTIONS -->
+    <form class="center-align admin-actions admin" style="margin: 40px auto; max-width: 300px; display: none;">
+        <input type="email" placeholder="User email" id="admin-email" required />
+        <button class="btn-small darken-2 z-depth-0">Make admin</button>
+    </form>
+
+    <!-- SIGN UP MODAL -->
+    <div id="modal-signup" class="modal">
+        <div class="modal-content">
+            <h4>Sign up</h4><br />
+                            <form id="signup-form">
+                                <div class="input-field">
+                                    <input type="email" id="signup-email" required />
+                                    <label for="signup-email">Email address</label>
+                                </div>
+                                <div class="input-field">
+                                    <input type="text" id="signup-username" required />
+                                    <label for="signup-username">Username</label>
+                                </div>
+                                <div class="input-field">
+                                    <input type="password" id="signup-password" required />
+                                    <label for="signup-password">Choose password</label>
+                                </div>
+
+                                <div class="input-field">
+                                    <input type="text" id="signup-storeid" />
+                                    <label for="signup-storeid">Store ID (For Store Managers Only)</label>
+                                </div>
+                                <button id="sign-button" class="btn darken-2 z-depth-0">Sign up</button>
+                                <p class="error pink-text center-align"></p>
+                            </form>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="modal-login" class="modal">
+        <div class="modal-content">
+            <h4>Login</h4><br />
+                          <form id="login-form">
+                              <div class="input-field">
+                                  <input type="email" id="login-email" required />
+                                  <label for="login-email">Email address</label>
+                              </div>
+                              
+                              <div class="input-field">
+                                  <input type="password" id="login-password" required />
+                                  <label for="login-password">Your password</label>
+                              </div>
+                              
+                              <button class="btn darken-2 z-depth-0">Login</button>
+                              <p class="error pink-text center-align"></p>
+                          </form>
+        </div>
+    </div>
+
+    <!-- ACCOUNT MODAL -->
+    <div id="modal-account" class="modal">
+        <div class="modal-content center-align">
+            <h4>Account details</h4><br />
+            <div class="account-details"></div>
+        </div>
+    </div>
+
+    <div id="content">{% block content %}{% endblock %}</div>
+
+   
+
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-firestore.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-functions.js"></script>
+    <script>
+        function refreshPage() {
+
+            setTimeout(window.location.reload(), 2000);
+        }
+    </script>
+    
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyDNyqIzRHfYX_3o7FmKPpKcu3Cn7jiAFdo",
+            authDomain: "covid-hackathon-b2382.firebaseapp.com",
+            databaseURL: "https://covid-hackathon-b2382.firebaseio.com",
+            projectId: "covid-hackathon-b2382",
+            appId: "1:767307226351:web:e9473541ff53266c6b4f1a",
+            measurementId: "G-DEJ25RHL1Z"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+
+        // make auth and firestore references
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const functions = firebase.functions();
+    </script>
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+      var updateName = false; //true when username needs to be updated
+var updateStore = false; //true when storeid needs to be updated
+var username;
+var storeid;
+
+//add admin cloud function
+const adminForm = document.querySelector('.admin-actions');
+adminForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const adminEmail = document.querySelector('#admin-email').value;
+    const addAdminRole = functions.httpsCallable('addAdminRole');
+    addAdminRole({email: adminEmail}).then(result => {
+        console.log(result);
+    })
+})
+
+// listen for auth status changes
+auth.onAuthStateChanged(user => {
+  if (user) {
+    user.getIdTokenResult().then(idTokenResult => {
+      user.admin = idTokenResult.claims.admin;
+
+      //add username
+      if (updateName) {
+        user.updateProfile({
+          displayName: username,
+        }).then(function () {
+            setupUI(user);
+          console.log(user.username);
+        }).catch(function(error) {
+          console.log(error.message);
+        });
+      }
+      //update store ID (for storeowners)
+      if (updateStore) {
+        user.updateProfile({
+          photoURL: storeid,
+        }).then(function () {
+            setupUI(user);
+          console.log("URL " + user.photoURL);
+        }).catch(function(error) {
+          console.log(error.message);
+        });
+      }
+      setupUI(user);
+    })
+      $.ajax({
+                    type: "POST",
+                    url: "/login",
+          contentType: "application/json;charset=utf-8",
+          data: JSON.stringify({ user_email: user.displayName, store_id: user.photoURL }),
+                    dataType: "json",
+                    success: function (response) { document.write(response); },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+  } else {
+      $.ajax({
+                    type: "POST",
+                    url: "/login",
+                    contentType: "application/json;charset=utf-8",
+                    data: JSON.stringify({ user_email: "", store_id: null}),
+                    dataType: "json",
+                    success: function (response) { document.write(response); },
+                    error: function (err) {
+                        console.log(err);
+                    }
+      });
+      console.log('logout');
+      setupUI();
+      
+  }
+})
+
+// signup
+const signupForm = document.querySelector('#signup-form');
+signupForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  // get user info
+  const email = signupForm['signup-email'].value;
+  const password = signupForm['signup-password'].value;
+  username = signupForm['signup-username'].value;
+  storeid = signupForm['signup-storeid'].value;
+
+  // sign up the user
+  auth.createUserWithEmailAndPassword(email, password).then(cred => {
+    // close the signup modal & reset form
+    const modal = document.querySelector('#modal-signup');
+    M.Modal.getInstance(modal).close();
+    signupForm.reset();
+    
+    updateName = true;
+    if (storeid!==null) {
+      updateStore = true;
+    }
+      signupForm.querySelector('.error').innerHTML = '';
+      
+  }).catch(err => {
+    updateName=false;
+    updateStore = false;
+    signupForm.querySelector('.error').innerHTML = err.message;
+  });
+    
+});
+
+        
+
+// logout
+const logout = document.querySelector('#logout');
+logout.addEventListener('click', (e) => {
+  e.preventDefault();
+  auth.signOut();
+});
+
+// login
+const loginForm = document.querySelector('#login-form');
+loginForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  // get user info
+  const email = loginForm['login-email'].value;
+  const password = loginForm['login-password'].value;
+
+  // log the user in
+  auth.signInWithEmailAndPassword(email, password).then((cred) => {
+    // close the signup modal & reset form
+    const modal = document.querySelector('#modal-login');
+    M.Modal.getInstance(modal).close();
+    loginForm.reset();
+
+    loginForm.querySelector('.error').innerHTML = '';
+  }).catch(err => {
+    loginForm.querySelector('.error').innerHTML = err.message;
+  });
+});
+
+    </script>
+    <script>
+        const loggedOutLinks = document.querySelectorAll('.logged-out');
+const loggedInLinks = document.querySelectorAll('.logged-in');
+const accountDetails = document.querySelector('.account-details');
+const adminItems = document.querySelectorAll('.admin');
+
+        const setupUI = (user) => {
+            var x = document.getElementById("userLoggedIn");
+            var y = document.getElementById("userLoggedOut");
+            if (user) {
+                if (user.admin) {
+                    adminItems.forEach(item => item.style.display = 'block');
+                }
+                //account info
+                const html = `
+      <div> Logged in as ${user.email}</div>
+      <div> Username: ${user.displayName}</div>
+      <div class ="pink-text">${user.photoURL ? 'Store Manager' : ''}</div>
+      <div class ="pink-text">${user.admin ? 'Admin' : ''}</div>
+    `;
+                accountDetails.innerHTML = html;
+                //toggle UI elements
+                loggedInLinks.forEach(item => item.style.display = 'block');
+                loggedOutLinks.forEach(item => item.style.display = 'none');
+                x.style.display = "block";
+                y.style.display = "none";
+            }
+            else {
+                adminItems.forEach(item => item.style.display = 'none');
+                //hide account info
+                accountDetails.innerHTML = '';
+                //toggle UI elements
+
+                loggedInLinks.forEach(item => item.style.display = 'none');
+                loggedOutLinks.forEach(item => item.style.display = 'block');
+                x.style.display = "none";
+                y.style.display = "block";
+            }
+        }
+
+// setup materialize components
+        document.addEventListener('DOMContentLoaded', function () {
+
+            var modals = document.querySelectorAll('.modal');
+            M.Modal.init(modals);
+
+            var items = document.querySelectorAll('.collapsible');
+            M.Collapsible.init(items);
+
+        });
+    </script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+
+</body>
+</html>

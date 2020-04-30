@@ -1,0 +1,83 @@
+{% extends "login.html" %}
+{% block title %}Index{% endblock %}
+{% block head %}
+{{ super() }}
+<style>
+    .container {
+        max-width: 1000px;
+    }
+
+    .ex2 {
+        display: inline;
+    }
+
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 53%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+        -ms-transform: translateX(-90%);
+        transform: translateX(-90%);
+    }
+
+
+
+
+    /* Create two equal columns that floats next to each other */
+    .column {
+        float: left;
+        width: 50%;
+        padding: 20px;
+        
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+        display: table;
+        clear: both;
+    }
+</style>
+
+{% endblock %}
+{% block content %}
+<div style="text-align:left; width:90%; position: relative;
+  left: 5%; top:30px">
+    <p style="width: 70%; display: inline">
+        <b>Welcome to TP-CRAZE!</b>
+        <br />
+        This is a crowdsourced application that will help monitor the availability of essential items near you in
+        the midst of the Covid-19 pandemic. To get started, click one of the buttons below to either find the
+        stores near you or to update the item-status of a store.
+        <br />
+        <br />
+        <br />
+        <br />
+    </p>
+</div>
+
+<div class="row group">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="column new_div">
+            <div style="display:inline; float:right">
+                {{ form.find_item(class="btn darken-2 z-depth-0") }}
+            </div>
+        </div>
+        <div class="column new_div" >
+            <div style="display:inline; float:left">
+                {{ form.provide_status(class="btn darken-2 z-depth-0") }}
+            </div>
+        </div>
+    </form>
+
+</div>
+
+
+
+
+
+    {% endblock %}
+
+
