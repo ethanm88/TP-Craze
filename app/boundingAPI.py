@@ -1,14 +1,21 @@
-# testAPI.py - just for testing printout of the API
-# PREREQS: TomTom API Key, GPS coords, internet access
+
+__author__ = ["Jerry Xu"]
+__credits__ = ["Ethan Mendes", "Jerry Xu", "Matthew Ding", "Jason Liang", "David Towers"]
+__license__ = "MIT"
+__version__ = "1.0.1"
+__maintainer__ = "Ethan Mendes"
+__email__ = "eamendes88@gmail.com"
+__status__ = "Prototype"
 
 import math
 import json
-# GET requests to TomTom API are made using this package: https://2.python-requests.org/en/master/
 import requests
+import os
 
 
+# GET requests to TomTom API are made using this package: https://2.python-requests.org/en/master/
 
-def stupidRound(value, up):
+def round(value, up):
 	if up == 1:
 		value = float(int(math.ceil(value * 1000))) / 1000
 		return value
@@ -18,6 +25,11 @@ def stupidRound(value, up):
 
 
 def main():
+	""" Main method to maintain terminal application allowing user to create a JSON file with desired stores in
+	a bounding box
+
+	"""
+	API_PRIVATE = os.environ.get("TOM_TOM_PRIVATE")
 	print("Please enter your desired filename (file will be JSON, do not leave blank): ")
 	fileName = str(input())
 	fileName = fileName.strip()
@@ -27,43 +39,19 @@ def main():
 	fileWriter = open(fileName + '.json', 'w')
 
 	print("Please enter your API key (leave blank for default): ")
-	apiKey = str(input())
-	apiKey = apiKey.strip()
+	API_PRIVATE = str(input())
+	API_PRIVATE = API_PRIVATE.strip()
 
-	# DO NOT RUN THIS KEY IN PRODUCTION. FOR TEST USE ONLY. TEST USING YOUR OWN KEY.
-	if len(apiKey) == 0:
+	if len(API_PRIVATE) == 0:
 		apiKey = str('KOlZazpVGjznzL2TJzBoJcOqNmxpVuGz')
 
-	# please don't enter garbage data into this part I don't have the mental effort to make this robust
-	# shit gets autorounded to three decimals so fuck precision
 
-	"""
-	print("Please enter bounding box westmost long: ")
-	farWest = float(input())
-	farWest = stupidRound(farWest, False)
-
-	print("Please enter bounding box eastmost long: ")
-	farEast = float(input())
-	farEast = stupidRound(farEast, True)
-
-	print("Please enter bounding box northmost lat: ")
-	farNorth = float(input())
-	farNorth = stupidRound(farNorth, True)
-
-	print("Please enter bounding box southmost lat: ")
-	farSouth = float(input())
-	farSouth = stupidRound(farSouth, False)
-	"""
+	# coordinates of bounding box
 	farWest = -73.508
 	farEast = -69.928
 	farNorth = 42.886
 	farSouth = 41.237
 
-	# let's see how many fucking divisions we need.
-	# the minimum box size will be goal of 10x10 miles for 'resolution'
-	# minimum x (i.e. E/W) division size is 0.19 'longitude' units capped at a max of 50
-	# minimum y (i.e. N/S) division size is 0.33 'latitude' units capped at a max of 15
-	# really don't fucking care how this works or if it gets screwed near equator it's a good rule of thumb
 
 	ewDivLength = 0.19
 	nsDivLength = 0.33
@@ -73,17 +61,16 @@ def main():
 
 	if ewDivNum > 50:
 		ewDivNum = 50
-		ewDivLength = stupidRound((farEast - farWest) / ewDivNum, True)
+		ewDivLength = round((farEast - farWest) / ewDivNum, True)
 
 	if nsDivNum > 15:
 		nsDivNum = 15
-		nsDivLength = stupidRound((farNorth - farSouth) / nsDivNum, True)
+		nsDivLength = round((farNorth - farSouth) / nsDivNum, True)
 
-	farEast = stupidRound((farWest + ewDivLength * ewDivNum), True)
-	farNorth = stupidRound((farSouth + nsDivLength * nsDivNum), True)
+
 
 	apiParameters = {
-		'key': apiKey,
+		'key': API_PRIVATE,
 		'typeahead': True,
 		'limit': 100,
 		'ofs': 0,
@@ -94,7 +81,6 @@ def main():
 	}
 	apiQuery = str('https://api.tomtom.com/search/2/categorySearch/.json');
 
-	# tricky bits
 
 	isExhausted = [[0 for EW in range(ewDivNum)] for NS in range(nsDivNum)]
 	globalExhausted = False
@@ -110,9 +96,7 @@ def main():
 	})
 	data['results'] = []
 
-	# fileWriter = open(fileName + '.json', 'w+')
 	fileWriter.write(json.dumps(data, sort_keys=True, indent=4))
-	# print(json.dumps(data, sort_keys=True, indent=4))
 
 	while (not globalExhausted) and apiCallSafe:
 		fileWriter = open(fileName + '.json', 'w+')
@@ -146,7 +130,6 @@ def main():
 					except:
 						response = requests.get(apiQuery, params=apiParameters)
 
-				# general info stuff/see if there's still stuff left
 				if jsonResponse['summary']['totalResults'] > jsonResponse['summary']['numResults'] + \
 						jsonResponse['summary'][
 							'offset']:
@@ -154,23 +137,11 @@ def main():
 				else:
 					isExhausted[NS][EW] = True
 
-				# parse results in
 				for eachStore in jsonResponse['results']:
-					"""
-					uniqueID = eachStore['id']
-					isUnique = True
-					for existStore in data['results']:
-						if uniqueID == existStore['id']:
-							isUnique = False
-							break
-
-					if isUnique:
-					"""
 					data['results'].append(eachStore)
 					totalDataCount += 1
 					for sumData in data['summary']:
 						sumData['numResults'] = totalDataCount
-						# print('...')
 
 				totalCallCount += 1
 

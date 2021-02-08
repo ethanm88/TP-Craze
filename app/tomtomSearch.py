@@ -1,17 +1,26 @@
-# testAPI.py - just for testing printout of the API
-# PREREQS: TomTom API Key, GPS coords, internet access
 
+__author__ = ["Jerry Xu", "Ethan Mendes"]
+__credits__ = ["Ethan Mendes", "Jerry Xu", "Matthew Ding", "Jason Liang", "David Towers"]
+__license__ = "MIT"
+__version__ = "1.0.1"
+__maintainer__ = "Ethan Mendes"
+__email__ = "eamendes88@gmail.com"
+__status__ = "Prototype"
 
 # GET requests to TomTom API are made using this package: https://2.python-requests.org/en/master/
+import os
 import requests
-import math
-import json
 import urllib.parse
 
 def geo(address):
-    apiKey = str('KOlZazpVGjznzL2TJzBoJcOqNmxpVuGz')
+    """ Method fetches the GPS coordinates for a particular address using the TomTom API
+
+    :param address: entered user address
+    :return: latitude and longitude of the address
+    """
+    API_PRIVATE = os.environ.get("TOM_TOM_PRIVATE")
     encoded = urllib.parse.quote(address)
-    query ='https://api.tomtom.com/search/2/geocode/' + str(encoded) + '.json?limit=1&countrySet=US&lat=42&lon=-72&topLeft=42.886%2C%20-73.508&btmRight=41.237%2C-69.928&key=' + apiKey
+    query ='https://api.tomtom.com/search/2/geocode/' + str(encoded) + '.json?limit=1&countrySet=US&lat=42&lon=-72&topLeft=42.886%2C%20-73.508&btmRight=41.237%2C-69.928&key=' + API_PRIVATE
 
     response = requests.get(query)
     while True:
@@ -29,12 +38,17 @@ def geo(address):
         longit = address['position']['lon']
     return latit, longit
 
-    return encoded
 
 
 def reverseGeo(latit, longit):
-    apiKey = str('KOlZazpVGjznzL2TJzBoJcOqNmxpVuGz')
-    query = 'https://api.tomtom.com/search/2/reverseGeocode/'+str(latit)+'%2C%20' +str(longit)+'.json?returnSpeedLimit=false&heading=0&radius=50&number=0&returnRoadUse=false&key=' + apiKey
+    """ Method returns the address from the GPS coordinates
+
+    :param latit: latitude
+    :param longit: longitude
+    :return: plain English address
+    """
+    API_PRIVATE = os.environ.get("TOM_TOM_PRIVATE")
+    query = 'https://api.tomtom.com/search/2/reverseGeocode/'+str(latit)+'%2C%20' +str(longit)+'.json?returnSpeedLimit=false&heading=0&radius=50&number=0&returnRoadUse=false&key=' + API_PRIVATE
     response = requests.get(query)
     while True:
         try:
@@ -51,27 +65,25 @@ def reverseGeo(latit, longit):
 
 
 def search(latit, longit, dist, num_results):
-    # DO NOT RUN THIS KEY IN PRODUCTION. FOR TEST USE ONLY. TEST USING YOUR OWN KEY.
+    """ Method fetches stores within a certain distance from a location
 
-    apiKey = str('KOlZazpVGjznzL2TJzBoJcOqNmxpVuGz')
-
-    # please don't enter garbage data into this part I don't have the mental effort to make this robust
-
+    :param latit: the latitude of the location
+    :param longit: the longitude of the location
+    :param dist: the maximum searching distance from the location
+    :param num_results: the number of results to return
+    :return: list of latitudes and longitudes from found stores
+    """
+    API_PRIVATE = os.environ.get("TOM_TOM_PRIVATE")
     apiParameters = {
-        'key': apiKey,
+        'key': API_PRIVATE,
         'typeahead': True,
         'limit': num_results,
         'ofs': 0,
         'countrySet': 'US',
         'lat': latit,
         'lon': longit,
-        'radius': dist,  # 10KM
-
-        # SWITCH BETWEEN THESE TWO DEPENDING ON WHAT CATEGORY YOU WANT
-        # all
+        'radius': dist,
         'categorySet': '9361023, 7332005, 9361066, 9361051, 9361009'
-        # just supermarkets
-        #'categorySet': '7332005'
     }
     apiQuery = str('https://api.tomtom.com/search/2/categorySearch/.json');
 
@@ -83,15 +95,6 @@ def search(latit, longit, dist, num_results):
         except:
             response = requests.get(apiQuery, params=apiParameters)
 
-    data = {}
-
-
-    '''
-    data['summary'] = []
-    data['summary'].append({
-        'numResults': jsonResponse['summary']['numResults']
-    })
-    '''
     latitude_lst = []
     longitude_lst = []
     for eachStore in jsonResponse['results']:
@@ -108,6 +111,4 @@ def search(latit, longit, dist, num_results):
         if repeat == False:
             final_lat.append(latitude_lst[i])
             final_lon.append(longitude_lst[i])
-    print(final_lat)
-    print(final_lon)
     return final_lat, final_lon
