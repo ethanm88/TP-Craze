@@ -20,7 +20,9 @@ def geo(address):
     """
     API_PRIVATE = os.environ.get("TOM_TOM_PRIVATE")
     encoded = urllib.parse.quote(address)
-    query ='https://api.tomtom.com/search/2/geocode/' + str(encoded) + '.json?limit=1&countrySet=US&lat=42&lon=-72&topLeft=42.886%2C%20-73.508&btmRight=41.237%2C-69.928&key=' + API_PRIVATE
+    query ='https://api.tomtom.com/search/2/geocode/' + str(encoded) + \
+           '.json?limit=1&countrySet=US&lat=42&lon=-72&topLeft=42.886%2C%20-73.508&btmRight=41.237%2C-69.928&key=' \
+           + API_PRIVATE
 
     response = requests.get(query)
     while True:
@@ -48,7 +50,8 @@ def reverseGeo(latit, longit):
     :return: plain English address
     """
     API_PRIVATE = os.environ.get("TOM_TOM_PRIVATE")
-    query = 'https://api.tomtom.com/search/2/reverseGeocode/'+str(latit)+'%2C%20' +str(longit)+'.json?returnSpeedLimit=false&heading=0&radius=50&number=0&returnRoadUse=false&key=' + API_PRIVATE
+    query = 'https://api.tomtom.com/search/2/reverseGeocode/'+str(latit)+'%2C%20' +str(longit)+\
+            '.json?returnSpeedLimit=false&heading=0&radius=50&number=0&returnRoadUse=false&key=' + API_PRIVATE
     response = requests.get(query)
     while True:
         try:

@@ -15,6 +15,7 @@ from wtforms import StringField, BooleanField, SubmitField, IntegerField, Select
 from wtforms.validators import DataRequired
 from datetime import datetime
 from flaskext.mysql import MySQL
+import os
 
 
 # declaring app name
@@ -25,7 +26,7 @@ mysql = MySQL()
 
 # MySQL configurations
 app.config['MYSQL_DATABASE_USER'] = 'WestfordCodevid1'
-app.config['MYSQL_DATABASE_PASSWORD'] = 'WAcodevid2020'
+app.config['MYSQL_DATABASE_PASSWORD'] = os.environ.get("MYSQL_PRIVATE")
 app.config['MYSQL_DATABASE_DB'] = 'WestfordCodevid1$codevid'
 app.config['MYSQL_DATABASE_HOST'] = 'WestfordCodevid123.mysql.pythonanywhere-services.com'
 mysql.init_app(app)
@@ -141,7 +142,7 @@ def parseMessage(store, raw_item, status_data):
     :return: list of formed messages, list of the color of status updates, list of item types
     """
     messages = []
-    type = []
+    type_item = []
     rating_choices = ['Full Stock', 'Majority Remaining', 'Half Remaining', 'Few Remaining', 'None Remaining']
     item_choices = ['Toilet Paper', 'Hand Sanitizer']
     color_array = []
@@ -156,11 +157,12 @@ def parseMessage(store, raw_item, status_data):
             new_message = '' + raw_date[i][0] + ' Status of ' + item_choices[
                 raw_item - 1] + ' at ' + store + ': ' + rating_choices[int(raw_rating[i][0]) - 1]
         else:
-            new_message = '' + raw_date[i][0] + ' Status of ' + item_choices[raw_item - 1] + ' at ' + store + ': ' + rating_choices[int(raw_rating[i][0]) - 1] + " - " + raw_user[i][0]
+            new_message = '' + raw_date[i][0] + ' Status of ' + item_choices[raw_item - 1] + ' at ' + store + ': ' \
+                          + rating_choices[int(raw_rating[i][0]) - 1] + " - " + raw_user[i][0]
         messages.append(new_message)
         color_array.append(int(raw_rating[i][0]))
-        type.append(int(raw_item))
-    return messages, color_array, type
+        type_item.append(int(raw_item))
+    return messages, color_array, type_item
 
 
 def getAddress(address):
@@ -243,7 +245,9 @@ def stores():
         radio[i] = str(session.get('stores')[i] + ' - ' + session.get('addresses')[i])
         status_values.append(getItemStatus(session.get('selected_item'), session.get('ids')[i], 5))
 
-    return render_template("store.html", len=len(form.stores.choices), form=form, status_values=status_values, radio = radio, selected_item_index = int(session.get('selected_item')), selected_item_name = getItem(session.get('selected_item')))
+    return render_template("store.html", len=len(form.stores.choices), form=form, status_values=status_values,
+                           radio = radio, selected_item_index = int(session.get('selected_item')),
+                           selected_item_name = getItem(session.get('selected_item')))
 
 
 
@@ -255,7 +259,7 @@ def status():
     """
     status_form = StatusForm()
 
-
+    # if user is submitting a new status update
     if request.method == 'POST':
         db = mysql.connect()
         cursor = db.cursor()
@@ -297,7 +301,8 @@ def status():
         cursor.execute(get_query)
         store_data.append(cursor.fetchall())
 
-    messages, colors, type_item = parseMessage(session['selected_store'], int(session.get('selected_item')), status_data)
+    messages, colors, type_item = parseMessage(session['selected_store'], int(session.get('selected_item')),
+                                               status_data)
 
     basic_info = []
     basic_info.append(getPhone(status_data[0][0][0]))
