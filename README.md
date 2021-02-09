@@ -3,4 +3,4 @@ This is a web-based app designed to help consumers stay up to date on inventory 
 
 This app was developed using Python Flask, HTML, CSS [Materialize framework](https://materializecss.com/), Javascript, and MySQL. Geographic search and geocoding was done using the [TomTom API](https://developer.tomtom.com/docs-and-tools), and user authentication was done using the [Firebase API](https://firebase.google.com/) 
 
-Matthew Ding, Jason Liang, Ethan Mendes, David Towers, and Jerry Xu worked on this project, which was submitted to the [Codevid-19 Hackathon](https://codevid19.com/).
+Matthew Ding, Jason Liang, Ethan Mendes, David Towers, and Jerry Xu worked on this project, which was submitted to the [Teens Take on COVID Hackathon](https://teens-take-on-covid.devpost.com/).
